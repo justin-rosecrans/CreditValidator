@@ -1,0 +1,162 @@
+<!--
+    Credit card numbers:
+        Visa: 4111 1111 1111 1111
+        Master Card: 5111 1111 1111 1111
+        American Express: 3473 1262 7367 544
+        Discover: 6011 8860 1763 1207
+
+-->
+<html>
+    <head>
+        <title>Credit card validator</title>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <style>
+            h1 {
+                margin: -.5em 0;
+                height: 4em;
+            }
+            #credit_card-form {
+                margin: 0 auto;
+                width: 26%;
+                border: 1px solid #000;
+                padding: 0 2em 2em 2em;
+                line-height: 4;
+                background: -moz-linear-gradient(top,  rgba(216,216,216,0.65) 0%, rgba(0,0,0,0) 100%); /* FF3.6+ */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(216,216,216,0.65)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+                background: -webkit-linear-gradient(top,  rgba(216,216,216,0.65) 0%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
+                background: -o-linear-gradient(top,  rgba(216,216,216,0.65) 0%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
+                background: -ms-linear-gradient(top,  rgba(216,216,216,0.65) 0%,rgba(0,0,0,0) 100%); /* IE10+ */
+                background: linear-gradient(to bottom,  rgba(216,216,216,0.65) 0%,rgba(0,0,0,0) 100%); /* W3C */
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6d8d8d8', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
+            }
+            .name > span,  .credit_card > span {
+                margin-right: 1em;
+            }
+            .red {
+                color: #FF0000;
+            }
+            input:invalid {
+                box-shadow: 0 0 5px 1px #FF0000;
+            }
+            #errors p {
+                line-height: 1;
+            }
+            .opaque {
+                opacity: 0.1;
+                filter:alpha(opacity=10);
+            }
+        </style>
+    </head>
+
+    <body>
+        <form id="credit_card-form" onsubmit="return validateForm();" action="">
+            <div id="errors"></div>
+            <h1>Payment Details</h1>
+            <a class="visa opaque" href="http://www.credit-card-logos.com"><img alt="Credit Card Logos" title="Credit Card Logos" src="http://www.credit-card-logos.com/images/visa_credit-card-logos/visa_logo_2.gif" width="57" height="36" border="0" /></a>
+            <a class="mcard opaque" href="http://www.credit-card-logos.com"><img alt="Credit Card Logos" title="Credit Card Logos" src="http:///www.credit-card-logos.com/images/mastercard_credit-card-logos/mastercard_logo_4.gif" width="65" height="41" border="0" /></a>
+            <a class="disc opaque" href="http://www.credit-card-logos.com"><img alt="Credit Card Logos" title="Credit Card Logos" src="http://www.credit-card-logos.com/images/discover_credit-card-logos/discover_logo_2.gif" width="57" height="36" border="0" /></a>
+            <a class="amex opaque" href="http://www.credit-card-logos.com"><img alt="Credit Card Logos" title="Credit Card Logos" src="http://www.credit-card-logos.com/images/american_express_credit-card-logos/american_express_logo_1.gif" width="43" height="43" border="0" /></a>
+
+            <div class="name">
+                <span>First name:<input type="text" name="firstName" class="first_name" size="20" maxlength="20"></span>
+                <span>Last name:<input type="text" name="lastName" class="last_name" size="20" maxlength="20"></span>
+            </div>
+            <span>
+                Credit card number:
+                <input type="text" class="credit-prefix" name="creditCardNumber" size="4" maxlength="4">&ndash;
+                <input type="text" class="credit-suffix1" name="creditCardNumber" size="4" maxlength="4">&ndash;
+                <input type="text" class="credit-suffix2" name="creditCardNumber" size="4" maxlength="4">&ndash;
+                <input type="text" class="credit-suffix3" name="creditCardNumber" size="4" maxlength="4">
+            </span>
+            <div class="credit_card">
+                <span>Expiration date:<input type="text" class="date"name="expirationDate" size="4" placeholder="09/14" pattern="(0[1-9]|1[0-2])\/[0-9]{2}"></span>
+                <span>CVC code:<input type="text" class="cvc" name="CVC" size="4" placeholder="123" maxlength="3" pattern="[0-9]{3}"><sub>On the back of card</sub></span>
+            </div>
+            <input type="submit" value="Validate">
+    </body>
+    <script type="text/javascript">
+
+            function validateForm() {
+                if(validateFields() && validateCredit()) {
+                    window.location = "/credit-card_test1.html";
+                    return false;
+                }
+                else {
+                    return false;
+                }
+            }
+            
+            //Error Validation to make sure form is filled out properly
+            function validateFields() {
+
+                //Removes old errors everytime validate button is clicked
+                $("#errors p").remove();
+                var flag = true;
+
+                if(!$(".first_name").val()) {
+                    var error = document.getElementById("errors");
+                    $("#errors").append("<p>Please enter a first name</p>");
+                    flag=false;
+                } 
+                if (!$(".last_name").val()) {
+                    var error = document.getElementById("errors");
+                    $("#errors").append("<p>Please enter a last name</p>");
+                    flag=false;
+                }
+                if (!$(".date").val()) {
+                    var error = document.getElementById("errors");
+                    $("#errors").append("<p>Please enter a expiration date</p>");
+                    flag=false;
+                }
+                if (!$(".cvc").val()) {
+                    var error = document.getElementById("errors");
+                    $("#errors").append("<p>Please enter a cvc code</p>");
+                }
+                if(!flag) {
+                    if(!validateCredit()){
+                        $("#errors").addClass("red");
+                        return false;
+                    }
+                }
+                else {
+                    return true;
+                }
+            }
+
+            //Credit Card Validation, to determine which type of credit card and if it is filled out porperly
+            function validateCredit() {
+                var creditNum = $(".credit-prefix").val() + $(".credit-suffix1").val() + $(".credit-suffix2").val() + $(".credit-suffix3").val();
+              
+                //Adds opacity class back in images everytime the validate button is clicked
+               $(".visa").addClass("opaque"); $(".mcard").addClass("opaque"); $(".disc").addClass("opaque"); $(".vamex").addClass("opaque");
+             
+               //Regular expression conditionals to find the credit card type. Also have length to determine correct amount of characters.
+               //Visa
+               if (creditNum.match(/^4/) !== null && creditNum.length == "16") {
+                    $(".visa").removeClass("opaque");
+                    return true;
+                }
+                //Master Card
+                else if (creditNum.match(/^5[1-5]/) !== null && creditNum.length == "16") {
+                    $(".mcard").removeClass("opaque");
+                    return true;
+                }
+                //American Express
+                else if (creditNum.match(/^3[47]/) !== null && creditNum.length == "15") {
+                    $(".disc").removeClass("opaque");
+                    return true;
+                }
+                //Discover Card
+                else if (creditNum.match(/^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)/) !== null && creditNum.length == "16") {
+                   $(".amex").removeClass("opaque");
+                    return true;
+                }
+                else if(creditNum.length < "15" || creditNum) {
+                    var error = document.getElementById("errors");
+                    $("#errors").append("<p>Invalid credit card number</p>");
+                    $("#errors").addClass("red");
+                    return false;
+                }
+            }
+    </script>
+</html>
